@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Metafy Translator</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 320px;
+      background: #0f0f14;
+      color: #e8e4d9;
+      font-family: -apple-system, "Hiragino Sans", "Yu Gothic", sans-serif;
+      padding: 24px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #2a2a3e;
+    }
+
+    .logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #c8a96e, #e8c87d);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #e8c87d;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      font-size: 11px;
+      color: #555;
+      margin-top: 1px;
+    }
+
+    .status-badge {
+      margin-left: auto;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .status-badge.active {
+      background: #0d2010;
+      color: #6ecb6e;
+      border: 1px solid #6ecb6e44;
+    }
+
+    .status-badge.inactive {
+      background: #201010;
+      color: #e86e6e;
+      border: 1px solid #e86e6e44;
+    }
+
+    .section-label {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .api-key-wrap {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 40px 10px 12px;
+      background: #1a1a24;
+      border: 1px solid #2a2a3e;
+      border-radius: 8px;
+      color: #e8e4d9;
+      font-size: 13px;
+      font-family: monospace;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: #e8c87d66;
+    }
+
+    .toggle-vis {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #555;
+      font-size: 16px;
+      padding: 2px;
+      line-height: 1;
+    }
+
+    .toggle-vis:hover { color: #888; }
+
+    .btn-save {
+      width: 100%;
+      padding: 10px;
+      background: linear-gradient(135deg, #c8a96e, #e8c87d);
+      color: #111;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: opacity 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-save:hover { opacity: 0.85; }
+    .btn-save:active { opacity: 0.7; }
+
+    .hint {
+      font-size: 11px;
+      color: #444;
+      line-height: 1.6;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #1e1e28;
+    }
+
+    .hint a {
+      color: #e8c87d88;
+      text-decoration: none;
+    }
+
+    .hint a:hover { color: #e8c87d; }
+
+    .toast {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0d2010;
+      color: #6ecb6e;
+      border: 1px solid #6ecb6e44;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">🎮</div>
+    <div>
+      <div class="title">Metafy Translator</div>
+      <div class="subtitle">日本語翻訳拡張機能</div>
+    </div>
+    <div class="status-badge inactive" id="status-badge">未設定</div>
+  </div>
+
+  <div class="section-label">Anthropic APIキー</div>
+  <div class="api-key-wrap">
+    <input type="password" id="api-key-input" placeholder="sk-ant-api03-..." />
+    <button class="toggle-vis" id="toggle-vis" title="表示/非表示">👁</button>
+  </div>
+  <button class="btn-save" id="save-btn">保存する</button>
+
+  <div class="cache-section">
+    <div class="section-label" style="margin-top:20px;margin-bottom:8px;">キャッシュ管理</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+      <span id="cache-info" style="font-size:12px;color:#555;flex:1;">確認中...</span>
+      <button id="clear-cache-btn" style="padding:6px 12px;background:transparent;border:1px solid #3a1a1a;color:#c45;border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;">削除</button>
+    </div>
+  </div>
+  <div class="hint">
+    APIキーは <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a> で取得できます。<br>
+    キーはブラウザのローカルストレージにのみ保存され、外部には送信されません。<br><br>
+    <strong style="color:#666">使い方:</strong> Metafyのガイドページを開くと右下に「翻訳」ボタンが表示されます。
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

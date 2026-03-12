@@ -1,0 +1,135 @@
+/* Metafy Translator UI */
+
+#mtfy-translate-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: #e8c87d;
+  border: 1px solid #e8c87d44;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: -apple-system, "Hiragino Sans", "Yu Gothic", sans-serif;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(232, 200, 125, 0.1);
+  transition: all 0.25s ease;
+  user-select: none;
+  letter-spacing: 0.03em;
+}
+
+#mtfy-translate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 16px rgba(232, 200, 125, 0.2);
+  border-color: #e8c87d88;
+}
+
+#mtfy-translate-btn:active {
+  transform: translateY(0);
+}
+
+#mtfy-translate-btn.mtfy-active {
+  background: linear-gradient(135deg, #2a1a0e, #3d2810);
+  border-color: #e8c87d;
+  color: #e8c87d;
+}
+
+#mtfy-translate-btn.mtfy-loading {
+  opacity: 0.7;
+  cursor: wait;
+  pointer-events: none;
+}
+
+#mtfy-translate-btn.mtfy-loading .mtfy-flag {
+  animation: mtfy-spin 1s linear infinite;
+  display: inline-block;
+}
+
+.mtfy-flag {
+  font-size: 18px;
+  line-height: 1;
+}
+
+@keyframes mtfy-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Status Banner */
+#mtfy-status-banner {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999999;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: -apple-system, "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  animation: mtfy-slidein 0.3s ease;
+}
+
+@keyframes mtfy-slidein {
+  from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+#mtfy-status-banner.mtfy-status-loading {
+  background: #1a1a2e;
+  color: #e8c87d;
+  border: 1px solid #e8c87d44;
+}
+
+#mtfy-status-banner.mtfy-status-success {
+  background: #0d1f0d;
+  color: #6ecb6e;
+  border: 1px solid #6ecb6e44;
+}
+
+#mtfy-status-banner.mtfy-status-error {
+  background: #1f0d0d;
+  color: #e86e6e;
+  border: 1px solid #e86e6e44;
+}
+
+/* 翻訳済みテキストのハイライト（オプション） */
+[data-mtfy-translated="true"] {
+  transition: color 0.3s ease;
+}
+
+/* キャッシュ状態 */
+#mtfy-translate-btn.mtfy-cached {
+  background: linear-gradient(135deg, #1a2e1a, #162e16);
+  border-color: #6ecb6e88;
+  color: #6ecb6e;
+}
+
+#mtfy-status-banner.mtfy-status-cached {
+  background: #0d1f0d;
+  color: #6ecb6e;
+  border: 1px solid #6ecb6e44;
+}
+
+/* 元テキストを隠す */
+.mtfy-original-wrap {
+  display: none !important;
+}
+
+/* 翻訳テキストを表示 */
+mtfy-t.mtfy-translation-node {
+  display: block;
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+}
